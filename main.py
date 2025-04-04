@@ -1,5 +1,7 @@
+import os 
+
 def menu_geral():
-    print('--Bem vindo ao sistema de extravio de bagagem--')
+    print('\n--Bem vindo ao sistema de extravio de bagagem--')
     print('--Clique na opção que deseja abaixo--')
     print("1 - Login")
     print("2 - Cadastrar Usuário")
@@ -7,8 +9,8 @@ def menu_geral():
 
 def menu_logado(usuario):
     print(f"\n-- MENU DO USUÁRIO: {usuario} --")
-    print("1 - Editar Usuário")
-    print("2 - Exibir Usuários")
+    print("1 - Exibir Usuários")
+    print("2 - Editar Usuário")
     print("3 - Excluir Usuário")
     print("0 - Sair")
 
@@ -52,6 +54,13 @@ def cadastrar(usuarios):
     except Exception as e:
         print("⚠️ Erro ao cadastrar o usuário:", e)
 
+def exibir(usuarios):
+    print('\n--Lista de usuarios--')
+    if not usuarios:
+        print("📭 Nenhum usuário cadastrado.")
+    else:
+        for nome in usuarios:
+            print(f'{nome}')
 
 
 def main():
@@ -62,19 +71,33 @@ def main():
         if usuario_logado:
             menu_logado(usuario_logado)
             opcao = input("Escolha uma opção: ").strip()
-
+            if opcao == "1":
+                os.system('cls')
+                exibir(usuarios)
+            elif opcao == "0":
+                os.system('cls')
+                print("👋 Saindo do sistema. Até logo!")
+                break
+            else:
+                os.system('cls')
+                print("⚠️ Opção inválida! Tente novamente.")
+            
         else:
             menu_geral()
             opcao = input("Escolha uma opção: ").strip()
 
             if opcao == "1":
+                os.system('cls')
                 usuario_logado = login(usuarios)
             elif opcao == "2":
+                os.system('cls')
                 cadastrar(usuarios)
             elif opcao == "3":
+                os.system('cls')
                 print("👋 Saindo do sistema. Até logo!")
                 break
             else:
+                os.system('cls')
                 print("⚠️ Opção inválida! Tente novamente.")
 
 main()
