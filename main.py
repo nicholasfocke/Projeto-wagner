@@ -20,7 +20,7 @@ def senha_valida(senha):
 
 def login(usuarios):
     print('--Login--')
-    nome = input("Digite o nome do usuário: ").strip()
+    nome = input("Digite o nome do usuário: ").strip().lower()
     if nome not in usuarios:
         print("❌ Usuário não encontrado!")
         return None
@@ -38,7 +38,7 @@ def login(usuarios):
 
 def cadastrar(usuarios):
     print('--Área de cadastro--')
-    nome = input("Digite o nome do usuário: ").strip()
+    nome = input("Digite o nome do usuário: ").strip().lower()
     if nome in usuarios:
         print("⚠️ Usuário já cadastrado.")
         return
