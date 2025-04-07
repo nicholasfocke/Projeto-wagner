@@ -15,7 +15,7 @@ def menu_logado(usuario):
     print("0 - Sair")
 
 def nome_valido(nome):
-    return nome.isalpha()
+    return nome.isalnum()
 
 def senha_valida(senha):
     return senha.isalnum() and senha != ""
