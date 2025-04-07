@@ -18,7 +18,7 @@ def nome_valido(nome):
     return nome.isalnum()
 
 def senha_valida(senha):
-    return senha.isalnum() and senha != ""
+    return senha.isalnum() and len(senha) >= 3
 
 def login(usuarios):
     print('--Login--')
@@ -57,7 +57,7 @@ def editar(usuarios, usuario_logado):
         return usuario_logado
 
     if nova_senha and not senha_valida(nova_senha):
-        print("⚠️ Senha inválida! Deve conter apenas letras ou números.")
+        print("⚠️ Senha inválida! Deve conter apenas letras ou números e 3 caracteres.")
         return usuario_logado
 
     novo_nome_final = novo_nome if novo_nome else alvo
@@ -104,12 +104,12 @@ def cadastrar(usuarios):
         print("⚠️ Usuário já cadastrado.")
         return
     if not nome_valido(nome):
-        print("⚠️ Nome de usuário inválido! Use apenas letras.")
+        print("⚠️ Nome de usuário inválido! Use apenas letras e números.")
         return
 
     senha = input('Digite a senha: ').strip()
     if not senha_valida(senha):
-        print("⚠️ Senha inválida! Use apenas letras ou números.")
+        print("⚠️ Senha inválida! Use apenas letras ou números e 3 caracteres.")
         return
 
     usuarios[nome] = senha
