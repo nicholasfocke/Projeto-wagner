@@ -1,4 +1,3 @@
-# cadastro.py
 from validacoes import nome_valido, senha_valida
 
 def cadastrar(usuarios):

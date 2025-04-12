@@ -1,4 +1,3 @@
-# login.py
 from validacoes import senha_valida
 
 def login(usuarios):
