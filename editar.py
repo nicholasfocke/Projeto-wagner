@@ -18,6 +18,10 @@ def editar(usuarios, usuario_logado):
         print("⚠️ Nenhuma alteração feita.")
         return usuario_logado
 
+    if " " in novo_nome:
+        print("⚠️  O nome de usuário não pode conter espaços.")
+        return usuario_logado
+
     if novo_nome and (not nome_valido(novo_nome) or novo_nome in usuarios):
         print("⚠️ Nome inválido ou já existente.")
         return usuario_logado
