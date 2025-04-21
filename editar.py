@@ -18,6 +18,10 @@ def editar(usuarios, usuario_logado):
         print("⚠️ Nenhuma alteração feita.")
         return usuario_logado
 
+    if usuario_logado == "admin" and alvo == "admin" and novo_nome:
+        print("⚠️ O administrador não pode alterar seu próprio nome de usuário.")
+        return usuario_logado
+
     if " " in novo_nome:
         print("⚠️  O nome de usuário não pode conter espaços.")
         return usuario_logado

@@ -6,6 +6,9 @@ def excluir(usuarios, usuario_logado):
         if nome not in usuarios:
             print("❌ Usuário não encontrado.")
             return usuario_logado
+        if nome == "admin":
+            print("⚠️ O administrador não pode excluir sua própria conta.")
+            return usuario_logado
     else:
         nome = usuario_logado
 
