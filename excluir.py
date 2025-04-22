@@ -3,7 +3,12 @@ def excluir(usuarios, usuario_logado):
 
     if usuario_logado == "admin":
         nome = input("Digite o nome do usuário que deseja excluir: ").strip().lower()
-        if nome not in usuarios:
+        usuario_alvo = None
+        for usuario in usuarios:
+            if usuario['nome'] == nome:
+                usuario_alvo = usuario
+                break
+        if not usuario_alvo:
             print("❌ Usuário não encontrado.")
             return usuario_logado
         if nome == "admin":
@@ -11,11 +16,17 @@ def excluir(usuarios, usuario_logado):
             return usuario_logado
     else:
         nome = usuario_logado
+        usuario_alvo = None
+        for usuario in usuarios:
+            if usuario['nome'] == nome:
+                usuario_alvo = usuario
+                break
 
     confirmacao = input(f"Tem certeza que deseja excluir '{nome}'? (s/n): ").lower()
     if confirmacao == "s":
-        del usuarios[nome]
+        usuarios.remove(usuario_alvo)
         print(f"✅ Usuário '{nome}' excluído com sucesso.")
         if nome == usuario_logado:
             return None
+
     return usuario_logado

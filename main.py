@@ -9,7 +9,7 @@ from validacoes import nome_valido, senha_valida
 
 
 def main():
-    usuarios = {"admin": "admin123"}
+    usuarios = [{"nome": "admin", "senha": "admin123"}]
     usuario_logado = None
 
     while True:
