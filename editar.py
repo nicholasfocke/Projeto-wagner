@@ -10,7 +10,7 @@ def editar(usuarios, usuario_logado):
             if usuario['nome'] == alvo:
                 usuario_alvo = usuario
                 break
-            
+
         if not usuario_alvo:
             print("❌ Usuário não encontrado.")
             return usuario_logado
@@ -54,5 +54,4 @@ def editar(usuarios, usuario_logado):
         usuario_alvo['senha'] = nova_senha
         print("✅ Senha atualizada com sucesso.")
 
-    # Retornar o nome atualizado ou o atual
     return novo_nome if novo_nome else usuario_logado
