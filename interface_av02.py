@@ -4,12 +4,11 @@ from tkinter import messagebox, simpledialog
 usuarios = {"admin": "admin123"}
 usuario_logado = None
 
-# Funções auxiliares
 def nome_valido(nome):
     return nome.isalnum()
 
 def senha_valida(senha):
-    return senha.isalnum() and len(senha) >= 3
+    return senha.isalnum() and len(senha) >= 3 and senha.strip()
 
 def atualizar_interface():
     if usuario_logado:
@@ -64,6 +63,9 @@ def editar_usuario():
     global usuario_logado
     if usuario_logado == "admin":
         alvo = simpledialog.askstring("Editar", "Digite o nome do usuário a editar:").strip().lower()
+        if alvo == "admin":
+            messagebox.showerror("Erro", "O administrador não pode editar a si mesmo.")
+            return
         if alvo not in usuarios:
             messagebox.showerror("Erro", "Usuário não encontrado.")
             return
@@ -97,6 +99,9 @@ def excluir_usuario():
     global usuario_logado
     if usuario_logado == "admin":
         nome = simpledialog.askstring("Excluir", "Digite o nome do usuário a excluir:").strip().lower()
+        if nome == "admin":
+            messagebox.showerror("Erro", "O administrador não pode excluir a si mesmo.")
+            return
         if nome not in usuarios:
             messagebox.showerror("Erro", "Usuário não encontrado.")
             return
