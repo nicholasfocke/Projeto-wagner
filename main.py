@@ -2,10 +2,11 @@ import os
 from menu import menu_geral, menu_logado
 from login import login
 from cadastro import cadastrar
-from exibir import exibir
+from exibir import exibir, exibir_registros
 from editar import editar
 from excluir import excluir
 from validacoes import nome_valido, senha_valida
+from registro_extravio import coletar_dados_passageiro, coletar_dados_voo, coletar_dados_passageiro_voo, coletar_dados_bagagem, coletar_ocorrencia, coletar_danificacao, coletar_entrega, formulario_completo
 
 
 def main():
@@ -26,6 +27,12 @@ def main():
 
             elif opcao == "3":
                 usuario_logado = excluir(usuarios, usuario_logado)
+
+            elif opcao == "4":
+                usuario_logado = formulario_completo(usuario_logado)
+
+            elif opcao == "5":
+                usuario_logado = exibir_registros(usuario_logado)
 
             elif opcao == "0":
                 print("👋 Logout realizado com sucesso!")
