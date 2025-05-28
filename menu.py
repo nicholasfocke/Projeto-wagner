@@ -12,4 +12,6 @@ def menu_logado(usuario):
     print("3 - Excluir Usuário")
     print("4 - Registrar extravio de bagagem")
     print("5 - Exibir registros de extravio")
+    print("6 - Excluir registro de extravio")
+    print("7 - Editar detalhes de um registro de extravio")
     print("0 - Sair")

@@ -9,19 +9,23 @@ def coletar_dados_passageiro():
         print("⚠️ Digite apenas letras e espaços no nome, sem números ou sinais.")
     while True:
         email = input("E-mail: ").strip()
-        if "@" in email and email.isalnum() == False:
+        if "@" in email and ".com" in email and email.isalnum() == False:
             break
-        print("⚠️ E-mail deve conter '@'.")
+        print("⚠️ E-mail deve conter '@' e '.com'.")
     while True:
         documento = input("Documento (RG/CPF/Passaporte): ").strip()
-        if documento.isdigit():
+        if documento.isdigit() and len(documento) >= 8:
             break
-        print("⚠️ Documento deve conter apenas números.")
+        print("⚠️ Documento deve conter apenas números e ter pelo menos 8 dígitos.")
     while True:
         data_nascimento = input("Data de nascimento (DD-MM-AAAA): ").strip()
-        if data_nascimento and all(c.isdigit() or c == '-' for c in data_nascimento):
+        if (
+            data_nascimento
+            and all(c.isdigit() or c == '-' for c in data_nascimento)
+            and len(data_nascimento.replace("-", "")) >= 8
+        ):
             break
-        print("⚠️ Data de nascimento não pode estar vazia e só pode conter números e traços.")
+        print("⚠️ Data de nascimento não pode estar vazia, só pode conter números e traços, e deve ter pelo menos 8 dígitos.")
     return {
         "nome": nome,
         "email": email,
@@ -60,8 +64,16 @@ def coletar_dados_voo():
 
 def coletar_dados_passageiro_voo():
     print("\n--- Dados do Passageiro no Voo ---")
-    assento = input("Assento: ").strip()
-    classe = input("Classe (Econômica/Executiva/Primeira): ").strip()
+    while True:
+        assento = input("Assento: ").strip()
+        if assento and assento.isalnum():
+            break
+        print("⚠️ Assento não pode estar vazio e deve conter letras e números.")
+    while True:
+        classe = input("Classe (Econômica/Executiva/Primeira): ").strip()
+        if classe and classe.isalpha():
+            break
+        print("⚠️ Classe não pode estar vazia e deve conter apenas letras.")
     return {
         "assento": assento,
         "classe": classe

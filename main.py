@@ -3,10 +3,10 @@ from menu import menu_geral, menu_logado
 from login import login
 from cadastro import cadastrar
 from exibir import exibir, exibir_registros
-from editar import editar
-from excluir import excluir
+from editar import editar, editar_registro_extravio
+from excluir import excluir, excluir_registro_extravio
 from validacoes import nome_valido, senha_valida
-from registro_extravio import coletar_dados_passageiro, coletar_dados_voo, coletar_dados_passageiro_voo, coletar_dados_bagagem, coletar_ocorrencia, coletar_danificacao, coletar_entrega, formulario_completo
+from registro_extravio import coletar_dados_passageiro, coletar_dados_voo, coletar_dados_passageiro_voo, coletar_dados_bagagem, coletar_ocorrencia, coletar_danificacao, coletar_entrega, formulario_completo, registros_extravio
 
 
 def main():
@@ -33,6 +33,12 @@ def main():
 
             elif opcao == "5":
                 usuario_logado = exibir_registros(usuario_logado)
+
+            elif opcao == "6":
+                usuario_logado = excluir_registro_extravio(registros_extravio, usuario_logado)
+            
+            elif opcao == "7":
+                usuario_logado = editar_registro_extravio(registros_extravio, usuario_logado)
 
             elif opcao == "0":
                 print("👋 Logout realizado com sucesso!")
