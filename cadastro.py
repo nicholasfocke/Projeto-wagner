@@ -1,4 +1,5 @@
 from validacoes import nome_valido, senha_valida
+import hashlib
 
 def cadastrar(cursor, conn):
     print('--Área de cadastro--')
@@ -18,6 +19,8 @@ def cadastrar(cursor, conn):
         print("⚠️ Senha inválida! Use apenas letras ou números e mínimo 3 caracteres.")
         return
 
-    cursor.execute("INSERT INTO usuarios (nome, senha) VALUES (%s, %s)", (nome, senha))
+    senha_hash = hashlib.sha256(senha.encode()).hexdigest()
+
+    cursor.execute("INSERT INTO usuarios (nome, senha) VALUES (%s, %s)", (nome, senha_hash))
     conn.commit()
     print("✅ Usuário cadastrado com sucesso!")
