@@ -1,13 +1,13 @@
 from validacoes import nome_valido, senha_valida
 
-def cadastrar(usuarios):
+def cadastrar(cursor, conn):
     print('--Área de cadastro--')
     nome = input("Digite o nome do usuário: ").strip().lower()
 
-    for usuario in usuarios:
-        if usuario['nome'] == nome:
-            print("⚠️ Usuário já cadastrado.")
-            return
+    cursor.execute("SELECT nome FROM usuarios WHERE nome = %s", (nome,))
+    if cursor.fetchone():
+        print("⚠️ Usuário já cadastrado.")
+        return
 
     if not nome_valido(nome):
         print("⚠️ Nome de usuário inválido! Use apenas letras e números.")
@@ -18,5 +18,6 @@ def cadastrar(usuarios):
         print("⚠️ Senha inválida! Use apenas letras ou números e mínimo 3 caracteres.")
         return
 
-    usuarios.append({'nome': nome, 'senha': senha})
+    cursor.execute("INSERT INTO usuarios (nome, senha) VALUES (%s, %s)", (nome, senha))
+    conn.commit()
     print("✅ Usuário cadastrado com sucesso!")

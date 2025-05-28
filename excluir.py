@@ -1,13 +1,10 @@
-def excluir(usuarios, usuario_logado):
+def excluir(cursor, conn, usuario_logado):
     print("\n-- Excluir Usuário --")
 
     if usuario_logado == "admin":
         nome = input("Digite o nome do usuário que deseja excluir: ").strip().lower()
-        usuario_alvo = None
-        for usuario in usuarios:
-            if usuario['nome'] == nome:
-                usuario_alvo = usuario
-                break
+        cursor.execute("SELECT nome FROM usuarios WHERE LOWER(nome) = %s", (nome,))
+        usuario_alvo = cursor.fetchone()
         if not usuario_alvo:
             print("❌ Usuário não encontrado.")
             return usuario_logado
@@ -16,28 +13,36 @@ def excluir(usuarios, usuario_logado):
             return usuario_logado
     else:
         nome = usuario_logado
-        usuario_alvo = None
-        for usuario in usuarios:
-            if usuario['nome'] == nome:
-                usuario_alvo = usuario
-                break
+        cursor.execute("SELECT nome FROM usuarios WHERE nome = %s", (nome,))
+        usuario_alvo = cursor.fetchone()
 
     confirmacao = input(f"Tem certeza que deseja excluir '{nome}'? (s/n): ").lower()
     if confirmacao == "s" or confirmacao == "sim":
-        usuarios.remove(usuario_alvo)
+        cursor.execute("DELETE FROM usuarios WHERE nome = %s", (nome,))
+        conn.commit()
         print(f"✅ Usuário '{nome}' excluído com sucesso.")
         if nome == usuario_logado:
             return None
 
     return usuario_logado
 
-def excluir_registro_extravio(registros_extravio, usuario_logado):
-    if not registros_extravio:
+def excluir_registro_extravio(cursor, conn, usuario_logado):
+    # Exibe registros de extravio (ocorrencias + passageiros + voos)
+    cursor.execute("""
+        SELECT o.id_ocorrencia, p.nome, v.numero_voo
+        FROM ocorrencias o
+        JOIN bagagens b ON o.id_bagagem = b.id_bagagem
+        JOIN passageiros p ON b.id_cliente = p.id_passageiro
+        JOIN voos v ON o.id_voo = v.id_voo
+        ORDER BY o.id_ocorrencia
+    """)
+    registros = cursor.fetchall()
+    if not registros:
         print("\nNenhum registro de extravio cadastrado.")
         return usuario_logado
     print("\n--- Registros de Extravio ---")
-    for i, registro in enumerate(registros_extravio, 1):
-        print(f"{i} - Passageiro: {registro['Passageiro']['nome']} | Voo: {registro['Voo']['numero_voo']}")
+    for i, reg in enumerate(registros, 1):
+        print(f"{i} - Passageiro: {reg[1]} | Voo: {reg[2]}")
     try:
         while True:
             escolha = input("Digite o número do registro que deseja excluir (0 para voltar): ").strip()
@@ -47,15 +52,23 @@ def excluir_registro_extravio(registros_extravio, usuario_logado):
             print("Digite um número válido.")
         if escolha == 0:
             return usuario_logado
-        if 1 <= escolha <= len(registros_extravio):
+        if 1 <= escolha <= len(registros):
             while True:
                 confirmacao = input(f"Tem certeza que deseja excluir o registro {escolha}? (s/n): ").strip().lower()
                 if confirmacao and confirmacao.isalpha():
                     break
                 print("Confirmação deve ser uma resposta de sim ou não (s/n).")
             if confirmacao == "s" or confirmacao == "sim":
-                excluido = registros_extravio.pop(escolha - 1)
-                print(f"✅ Registro do passageiro '{excluido['Passageiro']['nome']}' excluído com sucesso.")
+                id_ocorrencia = registros[escolha - 1][0]
+                # Exclui a ocorrência e dependências (danificação, entrega, bagagem)
+                cursor.execute("SELECT id_bagagem FROM ocorrencias WHERE id_ocorrencia = %s", (id_ocorrencia,))
+                id_bagagem = cursor.fetchone()[0]
+                cursor.execute("DELETE FROM danificacao WHERE id_bagagem = %s", (id_bagagem,))
+                cursor.execute("DELETE FROM entrega WHERE id_bagagem = %s", (id_bagagem,))
+                cursor.execute("DELETE FROM ocorrencias WHERE id_ocorrencia = %s", (id_ocorrencia,))
+                cursor.execute("DELETE FROM bagagens WHERE id_bagagem = %s", (id_bagagem,))
+                conn.commit()
+                print(f"✅ Registro do passageiro '{registros[escolha - 1][1]}' excluído com sucesso.")
             else:
                 print("Operação cancelada.")
         else:

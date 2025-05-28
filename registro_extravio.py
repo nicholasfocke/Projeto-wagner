@@ -1,5 +1,3 @@
-registros_extravio = []
-
 def coletar_dados_passageiro():
     print("\n--- Dados do Passageiro ---")
     while True:
@@ -130,7 +128,7 @@ def coletar_entrega():
         "endereco_entrega": endereco
     }
 
-def formulario_completo(usuario_logado):
+def formulario_completo(cursor, conn, usuario_logado):
     print("=== Formulário de Extravio de Bagagem ===")
     passageiro = coletar_dados_passageiro()
     voo = coletar_dados_voo()
@@ -139,6 +137,53 @@ def formulario_completo(usuario_logado):
     ocorrencia = coletar_ocorrencia()
     danificacao = coletar_danificacao()
     entrega = coletar_entrega()
+
+    cursor.execute("""
+        INSERT INTO passageiros (nome, email, documento, data_de_nascimento)
+        VALUES (%s, %s, %s, to_date(%s, 'DD-MM-YYYY'))
+        RETURNING id_passageiro
+    """, (passageiro["nome"], passageiro["email"], passageiro["documento"], passageiro["data_nascimento"]))
+    id_passageiro = cursor.fetchone()[0]
+
+    cursor.execute("""
+        INSERT INTO voos (numero_voo, origem, destino, horario)
+        VALUES (%s, %s, %s, %s)
+        RETURNING id_voo
+    """, (voo["numero_voo"], voo["origem"], voo["destino"], voo["horario"]))
+    id_voo = cursor.fetchone()[0]
+
+    cursor.execute("""
+        INSERT INTO passageiros_do_voo (id_passageiro, id_voo, assento, classe)
+        VALUES (%s, %s, %s, %s)
+    """, (id_passageiro, id_voo, passageiro_voo["assento"], passageiro_voo["classe"]))
+
+    cursor.execute("""
+        INSERT INTO bagagens (id_cliente, cor, marca, peso)
+        VALUES (%s, %s, %s, %s)
+        RETURNING id_bagagem
+    """, (id_passageiro, bagagem["cor"], bagagem["marca"], bagagem["peso"]))
+    id_bagagem = cursor.fetchone()[0]
+
+    cursor.execute("""
+        INSERT INTO ocorrencias (id_bagagem, id_voo, data_hora)
+        VALUES (%s, %s, to_timestamp(%s, 'DD-MM-YYYY HH24:MI'))
+        RETURNING id_ocorrencia
+    """, (id_bagagem, id_voo, ocorrencia["data_hora"]))
+    id_ocorrencia = cursor.fetchone()[0]
+
+    if danificacao["descricao"]:
+        cursor.execute("""
+            INSERT INTO danificacao (id_bagagem, descricao)
+            VALUES (%s, %s)
+        """, (id_bagagem, danificacao["descricao"]))
+
+    if entrega["endereco_entrega"]:
+        cursor.execute("""
+            INSERT INTO entrega (id_bagagem, endereco_entrega)
+            VALUES (%s, %s)
+        """, (id_bagagem, entrega["endereco_entrega"]))
+
+    conn.commit()
 
     registro = {
         "Passageiro": passageiro,
@@ -149,11 +194,10 @@ def formulario_completo(usuario_logado):
         "Danificação": danificacao,
         "Entrega": entrega
     }
-    registros_extravio.append(registro)
 
     print("\n--- Resumo do Registro de Extravio ---")
     for chave, valor in registro.items():
         print(f"{chave}: {valor}")
-    print("\n ✅ Registro concluído e salvo na memória.")
+    print("\n ✅ Registro concluído e salvo no banco de dados.")
 
     return usuario_logado
