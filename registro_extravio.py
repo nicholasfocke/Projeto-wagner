@@ -40,14 +40,14 @@ def coletar_dados_voo():
         print("⚠️ Número do voo deve ser números e letras ou apenas números.")
     while True:
         origem = input("Origem: ").strip()
-        if origem.isalpha():
+        if origem and all(c.isalpha() or c.isspace() for c in origem):
             break
-        print("⚠️ Origem deve conter apenas letras.")
+        print("⚠️ Origem deve conter apenas letras e espaços.")
     while True:
         destino = input("Destino: ").strip()
-        if destino.isalpha():
+        if destino and all(c.isalpha() or c.isspace() for c in destino):
             break
-        print("⚠️ Destino deve conter apenas letras.")
+        print("⚠️ Destino deve conter apenas letras e espaços.")
     while True:
         horario = input("Horário (HH:MM): ").strip()
         if horario and all(c.isdigit() or c == ':' for c in horario):
