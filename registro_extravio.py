@@ -20,7 +20,7 @@ def coletar_dados_passageiro():
         if (
             data_nascimento
             and all(c.isdigit() or c == '-' for c in data_nascimento)
-            and len(data_nascimento.replace("-", "")) >= 8
+            and len(data_nascimento.replace("-", "")) == 8
         ):
             break
         print("⚠️ Data de nascimento não pode estar vazia, só pode conter números e traços, e deve ter pelo menos 8 dígitos.")
@@ -106,8 +106,7 @@ def coletar_ocorrencia():
     print("\n--- Dados da Ocorrência ---")
     while True:
         data_hora = input("Data e hora do extravio (DD-MM-AAAA HH:MM): ").strip()
-        if data_hora and all(c.isdigit() or c in "- :"
-                             for c in data_hora):
+        if data_hora and all(c.isdigit() or c in "- :" for c in data_hora):
             break
         print("⚠️ Data e hora não pode estar vazia e só pode conter números, traços, espaço e dois pontos.")
     return {
@@ -158,7 +157,7 @@ def formulario_completo(cursor, conn, usuario_logado):
     """, (id_passageiro, id_voo, passageiro_voo["assento"], passageiro_voo["classe"]))
 
     cursor.execute("""
-        INSERT INTO bagagens (id_cliente, cor, marca, peso)
+        INSERT INTO bagagens (id_passageiro, cor, marca, peso)
         VALUES (%s, %s, %s, %s)
         RETURNING id_bagagem
     """, (id_passageiro, bagagem["cor"], bagagem["marca"], bagagem["peso"]))

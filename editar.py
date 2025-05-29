@@ -58,7 +58,7 @@ def editar_registro_extravio(cursor, conn, usuario_logado):
         SELECT o.id_ocorrencia, p.nome, v.numero_voo
         FROM ocorrencias o
         JOIN bagagens b ON o.id_bagagem = b.id_bagagem
-        JOIN passageiros p ON b.id_cliente = p.id_passageiro
+        JOIN passageiros p ON b.id_passageiro = p.id_passageiro
         JOIN voos v ON o.id_voo = v.id_voo
         ORDER BY o.id_ocorrencia
     """)
@@ -75,7 +75,6 @@ def editar_registro_extravio(cursor, conn, usuario_logado):
             return usuario_logado
         if 1 <= escolha <= len(registros):
             id_ocorrencia = registros[escolha - 1][0]
-            # Busca todos os dados relacionados
             cursor.execute("""
                 SELECT p.id_passageiro, p.nome, p.email, p.documento, p.data_de_nascimento,
                        v.id_voo, v.numero_voo, v.origem, v.destino, v.horario,
@@ -86,7 +85,7 @@ def editar_registro_extravio(cursor, conn, usuario_logado):
                        COALESCE(e.endereco_entrega, '')
                 FROM ocorrencias o
                 JOIN bagagens b ON o.id_bagagem = b.id_bagagem
-                JOIN passageiros p ON b.id_cliente = p.id_passageiro
+                JOIN passageiros p ON b.id_passageiro = p.id_passageiro
                 JOIN voos v ON o.id_voo = v.id_voo
                 JOIN passageiros_do_voo pdv ON pdv.id_passageiro = p.id_passageiro AND pdv.id_voo = v.id_voo
                 LEFT JOIN danificacao d ON d.id_bagagem = b.id_bagagem
@@ -98,7 +97,6 @@ def editar_registro_extravio(cursor, conn, usuario_logado):
                 print("Registro não encontrado.")
                 return usuario_logado
 
-            # Desempacota os dados
             (id_passageiro, nome, email, documento, data_nasc,
              id_voo, numero_voo, origem, destino, horario,
              assento, classe,

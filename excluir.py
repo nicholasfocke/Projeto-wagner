@@ -32,7 +32,7 @@ def excluir_registro_extravio(cursor, conn, usuario_logado):
         SELECT o.id_ocorrencia, p.nome, v.numero_voo
         FROM ocorrencias o
         JOIN bagagens b ON o.id_bagagem = b.id_bagagem
-        JOIN passageiros p ON b.id_cliente = p.id_passageiro
+        JOIN passageiros p ON b.id_passageiro = p.id_passageiro
         JOIN voos v ON o.id_voo = v.id_voo
         ORDER BY o.id_ocorrencia
     """)
