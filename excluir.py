@@ -27,7 +27,6 @@ def excluir(cursor, conn, usuario_logado):
     return usuario_logado
 
 def excluir_registro_extravio(cursor, conn, usuario_logado):
-    # Exibe registros de extravio (ocorrencias + passageiros + voos)
     cursor.execute("""
         SELECT o.id_ocorrencia, p.nome, v.numero_voo
         FROM ocorrencias o
@@ -60,7 +59,6 @@ def excluir_registro_extravio(cursor, conn, usuario_logado):
                 print("Confirmação deve ser uma resposta de sim ou não (s/n).")
             if confirmacao == "s" or confirmacao == "sim":
                 id_ocorrencia = registros[escolha - 1][0]
-                # Exclui a ocorrência e dependências (danificação, entrega, bagagem)
                 cursor.execute("SELECT id_bagagem FROM ocorrencias WHERE id_ocorrencia = %s", (id_ocorrencia,))
                 id_bagagem = cursor.fetchone()[0]
                 cursor.execute("DELETE FROM danificacao WHERE id_bagagem = %s", (id_bagagem,))
